@@ -1,0 +1,290 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Quicksand:wght@300..700&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ==========================================================================
+   DESIGN SYSTEM - Color Palette & Typography
+   ========================================================================== */
+
+/* ### Color Palette ###
+   - Primary Blue:        #3b82f6
+   - Success/Open:        #10b981 (Green)
+   - Warning/In Progress: #f59e0b (Amber)
+   - Neutral/Closed:      #6b7280 (Gray)
+   - Background:          #f9fafb (Light Gray)
+   - Text Primary:        #111827 (Dark Gray)
+   - Text Secondary:      #6b7280 (Medium Gray)
+*/
+
+/* ### Typography ###
+   - Headings: Bold, Large (text-4xl to text-6xl)
+   - Body:     Regular, Medium (text-base to text-lg)
+   - Labels:   Semibold, Small (text-sm)
+*/
+
+/* ### Layout Rules ###
+   - Max Width:      1440px (centered on large screens)
+   - Padding:        4rem (desktop), 1rem (mobile)
+   - Border Radius:  0.75rem (rounded-xl) for cards
+   - Shadows:        Medium shadows for cards, Large for modals
+   - Spacing:        Consistent 2rem-4rem between sections
+*/
+
+/* ==========================================================================
+   Theme Configuration
+   ========================================================================== */
+
+@theme inline {
+    /* Border Radius Scale */
+    --radius-sm: calc(var(--radius) - 4px);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) + 4px);
+
+    /* Base Colors */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+
+    /* Card Colors */
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+
+    /* Popover Colors */
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    /* Primary Colors (Custom Blue) */
+    --color-primary: #3b82f6;
+    --color-primary-foreground: var(--primary-foreground);
+
+    /* Secondary Colors */
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+
+    /* Muted Colors */
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+
+    /* Accent Colors */
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+
+    /* Destructive Colors */
+    --color-destructive: var(--destructive);
+
+    /* Border & Input Colors */
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+
+    /* Chart Colors */
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+
+    /* Sidebar Colors */
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+/* ==========================================================================
+   Light Theme (Default)
+   ========================================================================== */
+
+:root {
+    --radius: 0.625rem;
+
+    /* Base */
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+
+    /* Card */
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+
+    /* Popover */
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+
+    /* Primary */
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+
+    /* Secondary */
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+
+    /* Muted */
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+
+    /* Accent */
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+
+    /* Destructive */
+    --destructive: oklch(0.577 0.245 27.325);
+
+    /* Border & Input */
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+
+    /* Charts */
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+
+    /* Sidebar */
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+
+    font-family: "Inter", sans-serif;
+}
+
+/* ==========================================================================
+   Dark Theme
+   ========================================================================== */
+
+.dark {
+    /* Base */
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+
+    /* Card */
+    --card: oklch(0.205 0 0);
+    --card-foreground: oklch(0.985 0 0);
+
+    /* Popover */
+    --popover: oklch(0.205 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+
+    /* Primary */
+    --primary: oklch(0.922 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+
+    /* Secondary */
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+
+    /* Muted */
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+
+    /* Accent */
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+
+    /* Destructive */
+    --destructive: oklch(0.704 0.191 22.216);
+
+    /* Border & Input */
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
+
+    /* Charts */
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+
+    /* Sidebar */
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(1 0 0 / 10%);
+    --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* ==========================================================================
+   Base Layer Styles
+   ========================================================================== */
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+/* ==========================================================================
+   Custom Utility Classes (Based on Design System)
+   ========================================================================== */
+
+@layer utilities {
+    /* Status Colors */
+    .status-open {
+        @apply bg-green-500 text-white;
+    }
+
+    .status-in-progress {
+        @apply bg-amber-500 text-white;
+    }
+
+    .status-closed {
+        @apply bg-gray-500 text-white;
+    }
+
+    /* Container Max Width */
+    .container-app {
+        @apply mx-auto max-w-[1440px] px-4 md:px-16;
+    }
+
+    /* Card Styles */
+    .card-app {
+        @apply rounded-xl bg-card shadow-md;
+    }
+
+    /* Section Spacing */
+    .section-spacing {
+        @apply py-8 md:py-16;
+    }
+}
+
+.wave {
+    width: 100%; /* Must be wider than the container */
+    animation: wave 3s linear infinite both;
+}
+@keyframes wave {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@keyframes bounce1 {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-50%);
+    }
+}
