@@ -9,7 +9,7 @@ import CTA from "@/components/landing/Cta";
 export default function Home() {
     return (
         <main className="min-h-screen bg-background">
-            <div className="min-h-screen border relative">
+            <div className="min-h-screen border ">
                 <Header />
                 <Hero />
             </div>

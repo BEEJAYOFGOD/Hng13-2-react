@@ -1,53 +1,157 @@
-import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
+
+// ============================================
+// VALIDATION RULES (Pure Functions)
+// ============================================
+
+const validateEmail = (email: string) => {
+    const trimmed = email.trim();
+
+    if (!trimmed) {
+        return { isValid: false, message: "Email is required" };
+    }
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(trimmed)) {
+        return {
+            isValid: false,
+            message: "Please enter a valid email address",
+        };
+    }
+
+    return { isValid: true, message: "" };
+};
+
+const validatePassword = (password: string) => {
+    const trimmed = password.trim();
+
+    if (!trimmed) {
+        return { isValid: false, message: "Password cannot be empty" };
+    }
+
+    if (trimmed.length < 8) {
+        return {
+            isValid: false,
+            message: "Password must be at least 8 characters long",
+        };
+    }
+
+    return { isValid: true, message: "" };
+};
+
+// ============================================
+// COMPONENT
+// ============================================
 
 export default function LoginForm() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [errors, setErrors] = useState<{ email?: string; password?: string }>(
-        {}
-    );
+    const { login, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+
+    const [formData, setFormData] = useState({
+        email: "",
+        password: "",
+    });
+
+    const [errors, setErrors] = useState<{
+        email?: string;
+        password?: string;
+    }>({});
+
     const [isLoading, setIsLoading] = useState(false);
 
+    // ============================================
+    // VALIDATION HANDLERS
+    // ============================================
+
+    const validateField = (field: "email" | "password", value: string) => {
+        const validator = field === "email" ? validateEmail : validatePassword;
+        const result = validator(value);
+
+        setErrors((prev) => {
+            if (result.isValid) {
+                const newErrors = { ...prev };
+                delete newErrors[field];
+                return newErrors;
+            }
+            return { ...prev, [field]: result.message };
+        });
+
+        return result.isValid;
+    };
+
     const validateForm = () => {
-        const newErrors: { email?: string; password?: string } = {};
+        const emailResult = validateEmail(formData.email);
+        const passwordResult = validatePassword(formData.password);
 
-        if (!email) {
-            newErrors.email = "Email is required";
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            newErrors.email = "Please enter a valid email";
-        }
-
-        if (!password) {
-            newErrors.password = "Password is required";
-        } else if (password.length < 6) {
-            newErrors.password = "Password must be at least 6 characters";
-        }
+        const newErrors: typeof errors = {};
+        if (!emailResult.isValid) newErrors.email = emailResult.message;
+        if (!passwordResult.isValid)
+            newErrors.password = passwordResult.message;
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        return emailResult.isValid && passwordResult.isValid;
+    };
+
+    // ============================================
+    // EVENT HANDLERS
+    // ============================================
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({ ...prev, [name]: value }));
+
+        // Clear error when user starts typing
+        if (errors[name as keyof typeof errors]) {
+            setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors[name as keyof typeof errors];
+                return newErrors;
+            });
+        }
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        validateField(name as "email" | "password", value);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validateForm()) {
+            toast.error("Please fix the errors in the form");
             return;
         }
 
         setIsLoading(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const success = await login(formData.email, formData.password);
         setIsLoading(false);
 
-        // In a real app, you would send credentials to your backend
-        console.log("Login attempt:", { email, password });
+        if (success) {
+            setFormData({ email: "", password: "" });
+            navigate("/dashboard", { replace: true });
+        }
     };
+
+    // ============================================
+    // REDIRECT IF AUTHENTICATED
+    // ============================================
+
+    if (isAuthenticated) {
+        return <Navigate to="/dashboard" replace />;
+    }
+
+    // ============================================
+    // RENDER
+    // ============================================
 
     return (
         <Card className="border border-border">
@@ -55,24 +159,24 @@ export default function LoginForm() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Email */}
                     <div className="space-y-2">
-                        <Label htmlFor="email" className="text-foreground">
-                            Email Address
-                        </Label>
+                        <Label htmlFor="email">Email Address</Label>
                         <Input
                             id="email"
                             type="email"
+                            name="email"
                             placeholder="you@example.com"
-                            value={email}
-                            onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                                setEmail(e.target.value);
-                            }}
+                            value={formData.email}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                             className={errors.email ? "border-destructive" : ""}
                             disabled={isLoading}
+                            aria-invalid={!!errors.email}
                         />
                         {errors.email && (
-                            <p className="text-sm text-destructive">
+                            <p
+                                className="text-sm text-destructive"
+                                role="alert"
+                            >
                                 {errors.email}
                             </p>
                         )}
@@ -80,33 +184,26 @@ export default function LoginForm() {
 
                     {/* Password */}
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                            <Label
-                                htmlFor="password"
-                                className="text-foreground"
-                            >
-                                Password
-                            </Label>
-                            <a
-                                href="#"
-                                className="text-sm text-primary hover:underline"
-                            >
-                                Forgot password?
-                            </a>
-                        </div>
+                        <Label htmlFor="password">Password</Label>
                         <Input
                             id="password"
                             type="password"
+                            name="password"
                             placeholder="••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            value={formData.password}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                             className={
                                 errors.password ? "border-destructive" : ""
                             }
                             disabled={isLoading}
+                            aria-invalid={!!errors.password}
                         />
                         {errors.password && (
-                            <p className="text-sm text-destructive">
+                            <p
+                                className="text-sm text-destructive"
+                                role="alert"
+                            >
                                 {errors.password}
                             </p>
                         )}

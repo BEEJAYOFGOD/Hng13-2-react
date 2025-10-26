@@ -5,7 +5,7 @@ import {
     useEffect,
     ReactNode,
 } from "react";
-import { useNavigate } from "react-router-dom";
+
 import { toast } from "sonner";
 
 interface User {
@@ -94,6 +94,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 token: "mock-token-" + Date.now(),
                 user: { name, email },
             };
+
             localStorage.setItem("ticketapp_session", JSON.stringify(session));
 
             setUser(session.user);

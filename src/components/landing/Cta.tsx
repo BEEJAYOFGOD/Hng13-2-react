@@ -11,8 +11,8 @@ export default function CTA() {
                     Ready to Transform Your Ticket Management?
                 </h2>
                 <p className="text-lg text-primary-foreground/90 mb-8 max-w-2xl mx-auto">
-                    Join thousands of teams already using TicketFlow to
-                    streamline their workflow and improve productivity.
+                    Join thousands of teams already using Ticko to streamline
+                    their workflow and improve productivity.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button size="lg" variant="secondary" asChild>

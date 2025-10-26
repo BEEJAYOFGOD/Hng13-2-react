@@ -4,7 +4,7 @@ import wave from "../../assets/wave.svg";
 
 export default function Hero() {
     return (
-        <section className="py-20 md:py-32  ">
+        <section className="py-20 md:py-32 min-h-screen border-red-400  relative">
             {/* Background gradient */}
 
             <div className="bg-primary h-6 w-6 animate-bounce absolute right-12 top-24 rounded-full " />
@@ -23,8 +23,8 @@ export default function Hero() {
                 </h1>
 
                 <p className="text-lg text-muted-foreground max-w-lg text-center mx-auto">
-                    TicketFlow is the modern ticket management system designed
-                    for teams that want to work smarter, not harder. Track,
+                    Ticko is the modern ticket management system designed for
+                    teams that want to work smarter, not harder. Track,
                     prioritize, and resolve issues in real-time.
                 </p>
 
@@ -50,8 +50,8 @@ export default function Hero() {
                     No credit card required. Start managing tickets in minutes.
                 </p>
             </div>
-            <div className="absolute bottom-0 w-full  m">
-                <img className=" " src={wave} alt="Wave decoration" />
+            <div className="absolute bottom-0 w-full ">
+                <img className="w-[200%]" src={wave} alt="Wave decoration" />
             </div>
         </section>
     );

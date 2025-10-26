@@ -1,40 +1,71 @@
 import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 export default function SignupForm() {
     const { signup } = useAuth();
     const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         password: "",
         confirmPassword: "",
-        agreeToTerms: false,
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
+
+    // ============================================
+    // VALIDATION FUNCTIONS
+    // ============================================
 
     const validateName = (name: string) => {
         if (!name.trim()) {
             setErrors((prev) => ({ ...prev, name: "Name cannot be empty" }));
             return false;
-        } else if (name.length < 3) {
+        }
+        if (name.trim().length < 3) {
             setErrors((prev) => ({
                 ...prev,
-                name: "Name must be at least 3 characters long.",
+                name: "Name must be at least 3 characters long",
             }));
             return false;
         }
-        setErrors((prev) => ({ ...prev, name: "" }));
+
+        setErrors((prev) => {
+            const newErrors = { ...prev };
+            delete newErrors.name;
+            return newErrors;
+        });
+        return true;
+    };
+
+    const validateEmail = (email: string) => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!email.trim()) {
+            setErrors((prev) => ({ ...prev, email: "Email is required" }));
+            return false;
+        }
+        if (!emailPattern.test(email)) {
+            setErrors((prev) => ({
+                ...prev,
+                email: "Please enter a valid email address",
+            }));
+            return false;
+        }
+
+        setErrors((prev) => {
+            const newErrors = { ...prev };
+            delete newErrors.email;
+            return newErrors;
+        });
         return true;
     };
 
@@ -45,15 +76,20 @@ export default function SignupForm() {
                 password: "Password cannot be empty",
             }));
             return false;
-        } else if (password.trim().length < 5) {
+        }
+        if (password.trim().length < 8) {
             setErrors((prev) => ({
                 ...prev,
-                password: "Password must be at least 5 characters long.",
+                password: "Password must be at least 8 characters long",
             }));
             return false;
         }
 
-        setErrors((prev) => ({ ...prev, password: "" }));
+        setErrors((prev) => {
+            const newErrors = { ...prev };
+            delete newErrors.password;
+            return newErrors;
+        });
         return true;
     };
 
@@ -61,16 +97,18 @@ export default function SignupForm() {
         if (!password.trim()) {
             setErrors((prev) => ({
                 ...prev,
-                confirmPassword: "Confirm password cannot be empty",
+                confirmPassword: "Please confirm your password",
             }));
             return false;
-        } else if (password.trim().length < 5) {
+        }
+        if (password.trim().length < 8) {
             setErrors((prev) => ({
                 ...prev,
-                confirmPassword: "Password must be at least 5 characters long.",
+                confirmPassword: "Password must be at least 8 characters long",
             }));
             return false;
-        } else if (password !== formData.password) {
+        }
+        if (password !== formData.password) {
             setErrors((prev) => ({
                 ...prev,
                 confirmPassword: "Passwords do not match",
@@ -78,36 +116,16 @@ export default function SignupForm() {
             return false;
         }
 
-        setErrors((prev) => ({ ...prev, confirmPassword: "" }));
+        setErrors((prev) => {
+            const newErrors = { ...prev };
+            delete newErrors.confirmPassword;
+            return newErrors;
+        });
         return true;
-    };
-
-    const validateEmail = (email: string) => {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email.trim()) {
-            setErrors((prev) => ({ ...prev, email: "Email is required." }));
-            return false;
-        } else if (!emailPattern.test(email)) {
-            setErrors((prev) => ({
-                ...prev,
-                email: "Please enter a valid email address.",
-            }));
-            return false;
-        }
-        setErrors((prev) => ({ ...prev, email: "" }));
-        return true;
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
     };
 
     const validateForm = () => {
-        const isNamevalid = validateName(formData.name);
+        const isNameValid = validateName(formData.name);
         const isEmailValid = validateEmail(formData.email);
         const isPasswordValid = validatePassword(formData.password);
         const isConfirmPasswordValid = validateConfirmPassword(
@@ -115,37 +133,63 @@ export default function SignupForm() {
         );
 
         return (
-            isNamevalid &&
-            isConfirmPasswordValid &&
+            isNameValid &&
+            isEmailValid &&
             isPasswordValid &&
-            isEmailValid
+            isConfirmPasswordValid
         );
+    };
+
+    // ============================================
+    // EVENT HANDLERS
+    // ============================================
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+
+        // Clear error when user starts typing
+        if (errors[name as keyof typeof errors]) {
+            setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors[name as keyof typeof errors];
+                return newErrors;
+            });
+        }
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+
+        switch (name) {
+            case "name":
+                validateName(value);
+                break;
+            case "email":
+                validateEmail(value);
+                break;
+            case "password":
+                validatePassword(value);
+                break;
+            case "confirmPassword":
+                validateConfirmPassword(value);
+                break;
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        console.log(formData);
-
         if (!validateForm()) {
+            toast.error("Please fix the errors in the form");
             return;
         }
-        const session = {
-            token: "mock-token-" + Date.now(),
-            user: { name: "John", email: "john@example.com" },
-        };
-        localStorage.setItem("ticketapp_session", JSON.stringify(session));
 
         setIsLoading(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setFormData({
-            name: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-            agreeToTerms: false,
-        });
         const success = await signup(
             formData.name,
             formData.email,
@@ -154,11 +198,14 @@ export default function SignupForm() {
         setIsLoading(false);
 
         if (success) {
+            setFormData({
+                name: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+            });
             navigate("/dashboard", { replace: true });
         }
-
-        // In a real app, you would send data to your backend
-        console.log("Signup attempt:", formData);
     };
 
     return (
@@ -176,16 +223,17 @@ export default function SignupForm() {
                             type="text"
                             placeholder="John Doe"
                             value={formData.name}
-                            onChange={(e) => {
-                                handleChange(e);
-                                validateName(e.target.value);
-                            }}
-                            onBlur={(e) => validateName(e.target.value)}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                             className={errors.name ? "border-destructive" : ""}
                             disabled={isLoading}
+                            aria-invalid={!!errors.name}
                         />
                         {errors.name && (
-                            <p className="text-sm text-destructive">
+                            <p
+                                className="text-sm text-destructive"
+                                role="alert"
+                            >
                                 {errors.name}
                             </p>
                         )}
@@ -202,16 +250,17 @@ export default function SignupForm() {
                             type="email"
                             placeholder="you@example.com"
                             value={formData.email}
-                            onChange={(e) => {
-                                handleChange(e);
-                                validateEmail(e.target.value);
-                            }}
-                            onBlur={(e) => validateEmail(e.target.value)}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                             className={errors.email ? "border-destructive" : ""}
                             disabled={isLoading}
+                            aria-invalid={!!errors.email}
                         />
                         {errors.email && (
-                            <p className="text-sm text-destructive">
+                            <p
+                                className="text-sm text-destructive"
+                                role="alert"
+                            >
                                 {errors.email}
                             </p>
                         )}
@@ -228,20 +277,19 @@ export default function SignupForm() {
                             type="password"
                             placeholder="••••••••"
                             value={formData.password}
-                            onChange={(e) => {
-                                handleChange(e);
-                                validatePassword(e.target.value);
-                            }}
-                            onBlur={(e) => {
-                                validatePassword(e.target.value);
-                            }}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                             className={
                                 errors.password ? "border-destructive" : ""
                             }
                             disabled={isLoading}
+                            aria-invalid={!!errors.password}
                         />
                         {errors.password && (
-                            <p className="text-sm text-destructive">
+                            <p
+                                className="text-sm text-destructive"
+                                role="alert"
+                            >
                                 {errors.password}
                             </p>
                         )}
@@ -261,65 +309,25 @@ export default function SignupForm() {
                             type="password"
                             placeholder="••••••••"
                             value={formData.confirmPassword}
-                            onChange={(e) => {
-                                handleChange(e);
-                                validateConfirmPassword(e.target.value);
-                            }}
-                            onBlur={(e) => {
-                                validateConfirmPassword(e.target.value);
-                            }}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
                             className={
                                 errors.confirmPassword
                                     ? "border-destructive"
                                     : ""
                             }
                             disabled={isLoading}
+                            aria-invalid={!!errors.confirmPassword}
                         />
                         {errors.confirmPassword && (
-                            <p className="text-sm text-destructive">
+                            <p
+                                className="text-sm text-destructive"
+                                role="alert"
+                            >
                                 {errors.confirmPassword}
                             </p>
                         )}
                     </div>
-
-                    {/* Terms Checkbox */}
-                    <div className="flex items-start gap-2">
-                        <Checkbox
-                            id="terms"
-                            name="agreeToTerms"
-                            checked={formData.agreeToTerms}
-                            onCheckedChange={(checked) =>
-                                setFormData((prev) => ({
-                                    ...prev,
-                                    agreeToTerms: checked === true,
-                                }))
-                            }
-                        />
-                        <label
-                            htmlFor="terms"
-                            className="text-sm text-muted-foreground cursor-pointer"
-                        >
-                            I agree to the{" "}
-                            <a
-                                href="#"
-                                className="text-primary hover:underline"
-                            >
-                                Terms of Service
-                            </a>{" "}
-                            and{" "}
-                            <a
-                                href="#"
-                                className="text-primary hover:underline"
-                            >
-                                Privacy Policy
-                            </a>
-                        </label>
-                    </div>
-                    {errors.agreeToTerms && (
-                        <p className="text-sm text-destructive">
-                            {errors.agreeToTerms}
-                        </p>
-                    )}
 
                     {/* Submit Button */}
                     <Button

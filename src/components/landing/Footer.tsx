@@ -14,7 +14,7 @@ export default function Footer() {
                                 </span>
                             </div>
                             <span className="font-bold text-foreground">
-                                TicketFlow
+                                Ticko
                             </span>
                         </Link>
                         <p className="text-muted-foreground text-sm">
@@ -150,7 +150,7 @@ export default function Footer() {
                 {/* Bottom */}
                 <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center">
                     <p className="text-muted-foreground text-sm">
-                        © 2025 TicketFlow. All rights reserved.
+                        © 2025 Ticko. All rights reserved.
                     </p>
                     <div className="flex gap-6 mt-4 md:mt-0">
                         <Link

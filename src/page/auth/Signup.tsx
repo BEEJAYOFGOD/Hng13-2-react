@@ -17,7 +17,7 @@ export default function Signup() {
                             </span>
                         </div>
                         <span className="font-bold text-xl text-foreground">
-                            TicketFlow
+                            Ticko
                         </span>
                     </Link>
                     <h1 className="text-2xl font-bold text-foreground mb-2">
@@ -35,7 +35,7 @@ export default function Signup() {
                 <p className="text-center text-muted-foreground text-sm mt-6">
                     Already have an account?{" "}
                     <Link
-                        to="/login"
+                        to="/auth/login"
                         className="text-primary hover:underline font-medium"
                     >
                         Sign in

@@ -9,8 +9,8 @@ import {
 
 const faqs = [
     {
-        question: "What is TicketFlow?",
-        answer: "TicketFlow is a modern ticket management system designed to help teams track, prioritize, and resolve issues efficiently. It provides real-time collaboration, automation, and detailed analytics.",
+        question: "What is Ticko?",
+        answer: "Ticko is a modern ticket management system designed to help teams track, prioritize, and resolve issues efficiently. It provides real-time collaboration, automation, and detailed analytics.",
     },
     {
         question: "How do I get started?",
@@ -18,7 +18,7 @@ const faqs = [
     },
     {
         question: "Can I integrate with other tools?",
-        answer: "Yes! TicketFlow integrates with popular tools like Slack, email, webhooks, and more. Check our integrations page for the full list.",
+        answer: "Yes! Ticko integrates with popular tools like Slack, email, webhooks, and more. Check our integrations page for the full list.",
     },
     {
         question: "Is my data secure?",
@@ -43,7 +43,7 @@ export default function FAQ() {
                         Frequently Asked Questions
                     </h2>
                     <p className="text-lg text-muted-foreground">
-                        Find answers to common questions about TicketFlow.
+                        Find answers to common questions about Ticko.
                     </p>
                 </div>
 

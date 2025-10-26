@@ -18,11 +18,11 @@ export default function Login() {
                                 </span>
                             </div>
                             <span className="font-bold text-xl text-foreground">
-                                TicketFlow
+                                Ticko
                             </span>
                         </Link>
                         <h1 className="text-2xl font-bold text-foreground mb-2">
-                            Welcome Back
+                            Nice to see you again
                         </h1>
                         <p className="text-muted-foreground">
                             Sign in to your account to continue
