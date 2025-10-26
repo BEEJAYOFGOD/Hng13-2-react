@@ -1,77 +1,46 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { Ticket } from "./Dashboard";
 import { toast } from "sonner";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const AllTickets = () => {
-    const naviagte = useNavigate();
-    const recentTickets = [
-        {
-            id: "1",
-            title: "Fix login authentication bug",
-            description:
-                "Users are experiencing issues logging in with Google OAuth. Need to investigate the redirect callback.",
-            status: "open",
-            createdAt: "2025-10-20T10:00:00Z",
-            priority: "high",
-        },
-        {
-            id: "2",
-            title: "Update dashboard UI design",
-            description:
-                "Redesign the main dashboard to match new brand guidelines and improve user experience.",
-            status: "in_progress",
-            createdAt: "2025-10-18T14:30:00Z",
-            priority: "low",
-        },
-        {
-            id: "3",
-            title: "Add export to PDF feature",
-            description:
-                "Implement functionality to export reports as PDF documents with custom formatting.",
-            status: "closed",
-            createdAt: "2025-10-15T09:15:00Z",
-            priority: "low",
-        },
-        {
-            id: "4",
-            title: "Database performance optimization",
-            description:
-                "Optimize slow queries affecting the user dashboard load times.",
-            status: "open",
-            createdAt: "2025-10-22T16:45:00Z",
-            priority: "low",
-        },
-        {
-            id: "5",
-            title: "Implement email notifications",
-            description:
-                "Set up automated email notifications for ticket status updates.",
-            status: "in_progress",
-            createdAt: "2025-10-19T11:20:00Z",
-            priority: "low",
-        },
-        {
-            id: "6",
-            title: "Fix mobile responsive issues",
-            description:
-                "Several pages are not rendering correctly on mobile devices. Need responsive fixes.",
-            status: "closed",
-            createdAt: "2025-10-12T08:00:00Z",
-            priority: "low",
-        },
-    ];
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [tickets, setTickets] = useState<Ticket[]>([]);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [ticketToDelete, setTicketToDelete] = useState<Ticket | null>(null);
 
-    const [ticketToDelete, setTicketToDelete] = useState<Ticket | null>({
-        id: "",
-        title: "",
-        priority: "",
-        status: "",
-        description: "",
-        createdAt: "",
-    });
+    // Check if we're on the active tickets route
+    const isActiveTicketsRoute = location.pathname === "/tickets/active";
+
+    // Load tickets from localStorage
+    useEffect(() => {
+        const loadTickets = () => {
+            const ticketsData = localStorage.getItem("ticketapp_tickets");
+            if (ticketsData) {
+                try {
+                    const parsedTickets = JSON.parse(ticketsData);
+                    setTickets(parsedTickets);
+                } catch (error) {
+                    console.error("Error parsing tickets:", error);
+                    setTickets([]);
+                }
+            } else {
+                setTickets([]);
+            }
+        };
+
+        loadTickets();
+    }, []);
+
+    // Filter tickets based on route
+    const displayedTickets = isActiveTicketsRoute
+        ? tickets.filter(
+              (ticket) =>
+                  ticket.status === "open" || ticket.status === "in_progress"
+          )
+        : tickets;
 
     const handleDeleteClick = (ticket: Ticket) => {
         setTicketToDelete(ticket);
@@ -79,7 +48,6 @@ const AllTickets = () => {
     };
 
     const handleDelete = () => {
-        // Delete logic
         const ticketsData = localStorage.getItem("ticketapp_tickets");
         if (ticketsData) {
             const tickets = JSON.parse(ticketsData);
@@ -91,10 +59,11 @@ const AllTickets = () => {
                 JSON.stringify(updatedTickets)
             );
 
+            // Update local state
+            setTickets(updatedTickets);
+
             toast.success("Ticket deleted successfully");
             setShowDeleteDialog(false);
-
-            // Refresh or update state
         }
     };
 
@@ -118,6 +87,7 @@ const AllTickets = () => {
                 return "";
         }
     };
+
     const getStatusLabel = (status: string) => {
         switch (status) {
             case "open":
@@ -132,7 +102,6 @@ const AllTickets = () => {
     };
 
     const confirmDelete = () => {
-        console.log("Deleting ticket:", ticketToDelete?.title);
         handleDelete();
         setShowDeleteDialog(false);
         setTicketToDelete(null);
@@ -140,73 +109,112 @@ const AllTickets = () => {
 
     return (
         <main className="p-8 pt-12">
-            <h1 className="text-3xl font-bol mb-4">All Tickets</h1>
+            <h1 className="text-3xl font-bold mb-4">
+                {isActiveTicketsRoute ? "Active Tickets" : "All Tickets"}
+            </h1>
+
+            {/* Optional: Add filter tabs */}
+            <div className="flex gap-4 mb-6">
+                <Link
+                    to="/tickets"
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                        !isActiveTicketsRoute
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                >
+                    All Tickets
+                </Link>
+                <Link
+                    to="/tickets/active"
+                    className={`px-4 py-2 rounded-lg transition-colors ${
+                        isActiveTicketsRoute
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                    }`}
+                >
+                    Active Tickets
+                </Link>
+            </div>
+
             <div className="space-y-3">
-                {recentTickets.map((ticket) => (
-                    <div
-                        key={ticket.id}
-                        className="bg-white border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200"
-                    >
-                        {/* Card Header */}
-                        <div className="p-5 border-b border-gray-100">
-                            <div className="flex justify-between items-start gap-3 mb-3">
-                                <h3 className="text-lg font-semibold text-gray-900 flex-1 leading-tight">
-                                    {ticket.title}
-                                </h3>
+                {displayedTickets.length > 0 ? (
+                    displayedTickets.map((ticket: Ticket) => (
+                        <div
+                            key={ticket.id}
+                            className="bg-white border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200"
+                        >
+                            {/* Card Header */}
+                            <div className="p-5 border-b border-gray-100">
+                                <div className="flex justify-between items-start gap-3 mb-3">
+                                    <h3 className="text-lg font-semibold text-gray-900 flex-1 leading-tight">
+                                        {ticket.title}
+                                    </h3>
 
-                                {/* Status Tag */}
-                                <span
-                                    className={`${getStatusColor(
-                                        ticket.status
-                                    )} px-3 py-1 rounded-full text-xs font-medium border whitespace-nowrap`}
-                                >
-                                    {getStatusLabel(ticket.status)}
-                                </span>
+                                    {/* Status Tag */}
+                                    <span
+                                        className={`${getStatusColor(
+                                            ticket.status
+                                        )} px-3 py-1 rounded-full text-xs font-medium border whitespace-nowrap`}
+                                    >
+                                        {getStatusLabel(ticket.status)}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Card Content */}
-                        <div className="p-5 space-y-4">
-                            {ticket.description && (
-                                <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
-                                    {ticket.description}
-                                </p>
-                            )}
+                            {/* Card Content */}
+                            <div className="p-5 space-y-4">
+                                {ticket.description && (
+                                    <p className="text-sm text-gray-600 leading-relaxed line-clamp-3">
+                                        {ticket.description}
+                                    </p>
+                                )}
 
-                            {/* Card Footer */}
-                            <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-                                <span className="text-xs text-gray-500">
-                                    {formatDate(ticket.createdAt)}
-                                </span>
+                                {/* Card Footer */}
+                                <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                                    <span className="text-xs text-gray-500">
+                                        {formatDate(ticket.createdAt)}
+                                    </span>
 
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => {
-                                            naviagte(
-                                                `/tickets/edit/${ticket.id}`
-                                            );
-                                        }}
-                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                    >
-                                        <Pencil className="h-4 w-4" />
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            handleDeleteClick(ticket);
-                                        }}
-                                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                    </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => {
+                                                navigate(
+                                                    `/tickets/edit/${ticket.id}`
+                                                );
+                                            }}
+                                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                        >
+                                            <Pencil className="h-4 w-4" />
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                handleDeleteClick(ticket);
+                                            }}
+                                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <p className="text-center text-muted-foreground py-8">
+                        {isActiveTicketsRoute
+                            ? "No active tickets."
+                            : "No tickets yet."}
+                        <Link className="hover:underline" to="/dashboard">
+                            {" "}
+                            Create your first ticket here
+                        </Link>
+                    </p>
+                )}
             </div>
 
             {showDeleteDialog && (
-                <div className="fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50 b">
+                <div className="fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-[scale-in_0.2s_ease-out]">
                         <h2 className="text-xl font-bold text-gray-900 mb-2">
                             Delete Ticket?

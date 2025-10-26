@@ -11,11 +11,12 @@ import {
     TicketIcon,
     Pencil,
     Trash2,
+    LucideIcon,
 } from "lucide-react";
 import { Clock3Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
 export interface Ticket {
@@ -27,23 +28,126 @@ export interface Ticket {
     priority: string;
 }
 
+interface TicketStats {
+    title: string;
+    value: number;
+    icon: LucideIcon;
+    iconColor: string;
+    description: string;
+}
+
+interface TicketCounts {
+    total: number;
+    open: number;
+    inProgress: number;
+    closed: number;
+}
+
 const Dashboard = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [tickets, setTickets] = useState<Ticket[]>([]);
+    const [stats, setStats] = useState<TicketStats[]>([]);
+    const [ticketToDelete, setTicketToDelete] = useState<Ticket | null>(null);
 
-    const [ticketToDelete, setTicketToDelete] = useState<Ticket | null>({
-        id: "",
-        title: "",
-        priority: "",
-        status: "",
-        description: "",
-        createdAt: "",
-    });
     const handleDeleteClick = (ticket: Ticket) => {
         setTicketToDelete(ticket);
         setShowDeleteDialog(true);
     };
+
+    const getTicketStats = (): TicketStats[] => {
+        // Initialize counts
+        const counts: TicketCounts = {
+            total: 0,
+            open: 0,
+            inProgress: 0,
+            closed: 0,
+        };
+
+        try {
+            const ticketsData = localStorage.getItem("ticketapp_tickets");
+
+            if (ticketsData) {
+                const tickets: Ticket[] = JSON.parse(ticketsData);
+                counts.total = tickets.length;
+
+                // Count tickets by status
+                tickets.forEach((ticket) => {
+                    switch (ticket.status) {
+                        case "open":
+                            counts.open++;
+                            break;
+                        case "in_progress":
+                            counts.inProgress++;
+                            break;
+                        case "closed":
+                            counts.closed++;
+                            break;
+                    }
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching ticket stats:", error);
+        }
+
+        // Return stats array with actual counts
+        return [
+            {
+                title: "Total Tickets",
+                value: counts.total,
+                icon: Ticket,
+                iconColor: "text-blue-600",
+                description: "All tickets in system",
+            },
+            {
+                title: "Open Tickets",
+                value: counts.open,
+                icon: CheckCircle,
+                iconColor: "text-green-600",
+                description: "Awaiting action",
+            },
+            {
+                title: "In Progress",
+                value: counts.inProgress,
+                icon: Clock,
+                iconColor: "text-amber-600",
+                description: "Currently being worked on",
+            },
+            {
+                title: "Resolved",
+                value: counts.closed,
+                icon: XCircle,
+                iconColor: "text-gray-600",
+                description: "Successfully completed",
+            },
+        ];
+    };
+
+    useEffect(() => {
+        const loadTickets = () => {
+            const ticketsData = localStorage.getItem("ticketapp_tickets");
+            if (ticketsData) {
+                try {
+                    const parsedTickets = JSON.parse(ticketsData);
+                    setTickets(parsedTickets);
+                    // Update stats after loading tickets
+                    setStats(getTicketStats());
+                } catch (error) {
+                    console.error(
+                        "Error parsing tickets from localStorage:",
+                        error
+                    );
+                    setTickets([]);
+                    setStats(getTicketStats());
+                }
+            } else {
+                setStats(getTicketStats());
+            }
+        };
+
+        loadTickets();
+    }, []);
 
     const handleDelete = () => {
         // Delete logic
@@ -58,74 +162,39 @@ const Dashboard = () => {
                 JSON.stringify(updatedTickets)
             );
 
+            // Update local state
+            setTickets(updatedTickets);
+            // Update stats after deletion
+            setStats(getTicketStats());
+
             toast.success("Ticket deleted successfully");
             setShowDeleteDialog(false);
-
-            // Refresh or update state
         }
     };
-
-    const stats = [
-        {
-            title: "Total Tickets",
-            value: 24,
-            icon: Ticket,
-            iconColor: "text-blue-600",
-            description: "All tickets in system",
-        },
-        {
-            title: "Open Tickets",
-            value: 8,
-            icon: CheckCircle,
-            iconColor: "text-green-600",
-
-            description: "Awaiting action",
-        },
-        {
-            title: "In Progress",
-            value: 10,
-            icon: Clock,
-            iconColor: "text-amber-600",
-
-            description: "Currently being worked on",
-        },
-        {
-            title: "Resolved",
-            value: 6,
-            icon: XCircle,
-            iconColor: "text-gray-600",
-
-            description: "Successfully completed",
-        },
-    ];
 
     const QuickActions = [
         {
             icon: PlusIcon,
             text: "Create New Ticket",
             desc: "Start a new ticket to create a new issue",
-            href: "/",
+            href: "/tickets/create",
             color: "text-black",
         },
         {
             icon: TicketIcon,
-            text: "View All tikets",
-            desc: "browse and manage all tickets",
-            href: "/",
-            color: "text-green-300",
+            text: "View All Tickets",
+            desc: "Browse and manage all tickets",
+            href: "/tickets",
+            color: "text-green-600",
         },
         {
             icon: Clock3Icon,
-            text: "View Active tikets",
-            desc: "see all tickets Currently in progres",
-            href: "/",
-            color: "text-brown-300",
+            text: "View Active Tickets",
+            desc: "See all tickets currently in progress",
+            href: "/tickets/active",
+            color: "text-amber-600",
         },
     ];
-
-    const [tickets, setTickets] = useState<Ticket[]>([]);
-
-    console.log(tickets);
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -141,7 +210,6 @@ const Dashboard = () => {
     };
 
     const confirmDelete = () => {
-        console.log("Deleting ticket:", ticketToDelete?.title);
         handleDelete();
         setShowDeleteDialog(false);
         setTicketToDelete(null);
@@ -172,9 +240,9 @@ const Dashboard = () => {
         <section className="p-12">
             <h2 className="text-2xl font-bold">Welcome {user?.email}</h2>
             <div className="mt-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4  gap-6">
-                    {stats.map((stat, index) => (
-                        <DashboardStats key={index} {...stat} />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {stats.map((stat) => (
+                        <DashboardStats {...stat} />
                     ))}
                 </div>
             </div>
@@ -184,8 +252,8 @@ const Dashboard = () => {
             <Card className="mt-8">
                 <CardTitle className="p-4">Quick Actions</CardTitle>
                 <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {QuickActions.map((action) => (
-                        <Link to={action.href}>
+                    {QuickActions.map((action, index) => (
+                        <Link key={index} to={action.href}>
                             <div className="p-4 border border-border rounded-lg hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer">
                                 <div className="text-2xl mb-2">
                                     <action.icon
@@ -220,7 +288,7 @@ const Dashboard = () => {
                     <CardContent>
                         {tickets.length > 0 ? (
                             <div className="space-y-3">
-                                {tickets[0].map((ticket) => (
+                                {tickets.slice(0, 5).map((ticket: Ticket) => (
                                     <div
                                         key={ticket.id}
                                         className="bg-white border-2 border-gray-200 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200"
@@ -261,14 +329,18 @@ const Dashboard = () => {
                                                 </span>
 
                                                 <div className="flex gap-2">
-                                                    <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                                    <button
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/tickets/edit/${ticket.id}`
+                                                            )
+                                                        }
+                                                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                    >
                                                         <Pencil className="h-4 w-4" />
                                                     </button>
                                                     <button
                                                         onClick={() => {
-                                                            console.log(
-                                                                "ademol"
-                                                            );
                                                             handleDeleteClick(
                                                                 ticket
                                                             );
@@ -293,7 +365,7 @@ const Dashboard = () => {
             </section>
 
             {showDeleteDialog && (
-                <div className="fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50 b">
+                <div className="fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50">
                     <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 animate-[scale-in_0.2s_ease-out]">
                         <h2 className="text-xl font-bold text-gray-900 mb-2">
                             Delete Ticket?

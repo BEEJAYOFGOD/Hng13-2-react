@@ -53,6 +53,8 @@ function App() {
                 >
                     <Route index element={<AllTickets />} />
                     <Route path="create" element={<CreateEditTicket />} />
+                    <Route path="active" element={<AllTickets />} />
+
                     <Route path="edit/:id" element={<CreateEditTicket />} />
                 </Route>
 

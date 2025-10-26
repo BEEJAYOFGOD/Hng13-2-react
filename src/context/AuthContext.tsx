@@ -101,6 +101,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             toast.success("Account created successfully!");
             return true;
         } catch (error) {
+            console.log(error);
             toast.error("Failed to create account");
             return false;
         }
@@ -137,6 +138,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             toast.success("Login successful!");
             return true;
         } catch (error) {
+            console.log(error);
             toast.error("Login failed - please try again");
             return false;
         }

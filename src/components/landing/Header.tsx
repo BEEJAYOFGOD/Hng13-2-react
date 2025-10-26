@@ -1,7 +1,11 @@
 import { Button } from "../ui/button";
 import { NavLink as Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Header() {
+    const { isAuthenticated } = useAuth();
+
+    console.log(isAuthenticated);
     return (
         <header className="fixed w-full top-0 z-50 bg-background border-b border-border">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,7 +53,11 @@ export default function Header() {
                     {/* Auth Buttons */}
                     <div className="flex items-center gap-3">
                         <Button variant="ghost" asChild>
-                            <Link to="/auth/login">Log in</Link>
+                            {!isAuthenticated ? (
+                                <Link to="/auth/login">Log in</Link>
+                            ) : (
+                                <Link to="/dashboard">Dashboard</Link>
+                            )}
                         </Button>
                         <Button asChild>
                             <Link to="/auth/signup">Sign up</Link>

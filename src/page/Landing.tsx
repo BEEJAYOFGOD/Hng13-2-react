@@ -5,8 +5,10 @@ import Stats from "@/components/landing/Stats";
 import HowItWorks from "@/components/landing/How";
 import FAQ from "@/components/landing/Faq";
 import CTA from "@/components/landing/Cta";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
+
     return (
         <main className="min-h-screen bg-background">
             <div className="min-h-screen border ">
