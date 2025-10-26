@@ -2,61 +2,50 @@ import React, { useState, useEffect, useCallback } from "react";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useParams, useNavigate } from "react-router-dom";
-
-interface Ticket {
-    id: string;
-    title: string;
-    description: string;
-    status: "open" | "in_progress" | "closed";
-    priority?: string;
-    createdAt: string;
-    updatedAt?: string;
-}
+import { useTickets } from "@/context/TicketContext";
+import { Ticket } from "@/page/dashboard/Dashboard";
 
 const CreateEditTicket = () => {
+    const { tickets, addTicket, updateTicket } = useTickets();
     const { id } = useParams();
     const navigate = useNavigate();
+
     const isEditMode = !!id;
 
     const [formData, setFormData] = useState({
         title: "",
         description: "",
-        status: "",
+        status: "" as "open" | "in_progress" | "closed" | "",
         priority: "",
     });
 
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isLoading, setIsLoading] = useState(false);
 
+    console.log(tickets);
     // ============================================
     // LOAD TICKET DATA FOR EDITING
     // ============================================
 
-    const loadTicket = useCallback((ticketId: string) => {
-        try {
-            const ticketsData = localStorage.getItem("ticketapp_tickets");
-            if (ticketsData) {
-                const tickets: Ticket[] = JSON.parse(ticketsData);
-                const ticket = tickets.find((t) => t.id === ticketId);
+    const loadTicket = useCallback(
+        (ticketId: string) => {
+            const ticket = tickets.find((t) => t.id === ticketId);
 
-                if (ticket) {
-                    setFormData({
-                        title: ticket.title,
-                        description: ticket.description || "",
-                        status: ticket.status,
-                        priority: ticket.priority || "",
-                    });
-                } else {
-                    toast.error("Ticket not found");
-                    navigate("/tickets");
-                }
+            if (ticket) {
+                setFormData({
+                    title: ticket.title,
+                    description: ticket.description || "",
+                    status: ticket.status as "open" | "in_progress" | "closed",
+                    priority: ticket.priority || "",
+                });
+            } else {
+                toast.error("Ticket not found");
+                navigate("/tickets");
             }
-        } catch (error) {
-            console.log(error);
-            toast.error("Failed to load ticket");
-            navigate("/tickets");
-        }
-    }, []);
+        },
+
+        [tickets, navigate]
+    );
 
     useEffect(() => {
         if (isEditMode && id) {
@@ -93,7 +82,7 @@ const CreateEditTicket = () => {
     };
 
     const validateDesc = (desc: string) => {
-        // Description is optional based on task
+        // Since Description is optional
         if (desc && desc.trim().length < 10) {
             setErrors((prev) => ({
                 ...prev,
@@ -204,29 +193,20 @@ const CreateEditTicket = () => {
         setIsLoading(true);
 
         try {
-            const ticketsData = localStorage.getItem("ticketapp_tickets");
-            let tickets: Ticket[] = ticketsData ? JSON.parse(ticketsData) : [];
-
             if (isEditMode && id) {
-                // UPDATE existing ticket
-                tickets = tickets.map((ticket) =>
-                    ticket.id === id
-                        ? {
-                              ...ticket,
-                              title: formData.title,
-                              description: formData.description,
-                              status: formData.status as
-                                  | "open"
-                                  | "in_progress"
-                                  | "closed",
-                              priority: formData.priority,
-                              updatedAt: new Date().toISOString(),
-                          }
-                        : ticket
-                );
+                // UPDATE existing ticket using context
+                updateTicket(id, {
+                    title: formData.title,
+                    description: formData.description,
+                    status: formData.status as
+                        | "open"
+                        | "in_progress"
+                        | "closed",
+                    priority: formData.priority,
+                });
                 toast.success("Ticket updated successfully!");
             } else {
-                // CREATE new ticket
+                // CREATE new ticket using context
                 const newTicket: Ticket = {
                     id: "ticket-" + Date.now(),
                     title: formData.title,
@@ -238,12 +218,9 @@ const CreateEditTicket = () => {
                     priority: formData.priority,
                     createdAt: new Date().toISOString(),
                 };
-                tickets.push(newTicket);
+                addTicket(newTicket);
                 toast.success("Ticket created successfully!");
             }
-
-            // Save to localStorage
-            localStorage.setItem("ticketapp_tickets", JSON.stringify(tickets));
 
             // Reset form if creating new
             if (!isEditMode) {
@@ -400,14 +377,14 @@ const CreateEditTicket = () => {
                             <button
                                 type="button"
                                 onClick={() => navigate("/tickets")}
-                                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                className="px-4 py-2 border cursor-pointer border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
                                 disabled={isLoading}
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
-                                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-6 py-2 bg-blue-600 cursor-pointer text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={isLoading}
                             >
                                 {isLoading

@@ -11,13 +11,13 @@ import {
     TicketIcon,
     Pencil,
     Trash2,
-    LucideIcon,
 } from "lucide-react";
 import { Clock3Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
+import { useTickets } from "@/context/TicketContext";
 
 export interface Ticket {
     id: string;
@@ -28,70 +28,123 @@ export interface Ticket {
     priority: string;
 }
 
-interface TicketStats {
-    title: string;
-    value: number;
-    icon: LucideIcon;
-    iconColor: string;
-    description: string;
-}
-
-interface TicketCounts {
-    total: number;
-    open: number;
-    inProgress: number;
-    closed: number;
-}
-
 const Dashboard = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const [tickets, setTickets] = useState<Ticket[]>([]);
-    const [stats, setStats] = useState<TicketStats[]>([]);
+    // const [tickets, setTickets] = useState<Ticket[]>([]);
+
     const [ticketToDelete, setTicketToDelete] = useState<Ticket | null>(null);
+
+    const { tickets, deleteTicket } = useTickets();
 
     const handleDeleteClick = (ticket: Ticket) => {
         setTicketToDelete(ticket);
         setShowDeleteDialog(true);
     };
 
-    const getTicketStats = (): TicketStats[] => {
-        // Initialize counts
-        const counts: TicketCounts = {
-            total: 0,
-            open: 0,
-            inProgress: 0,
-            closed: 0,
+    // const getTicketStats = (): TicketStats[] => {
+    //     // Initialize counts
+    //     const counts: TicketCounts = {
+    //         total: 0,
+    //         open: 0,
+    //         inProgress: 0,
+    //         closed: 0,
+    //     };
+
+    //     try {
+    //         const ticketsData = localStorage.getItem("ticketapp_tickets");
+
+    //         if (ticketsData) {
+    //             const tickets: Ticket[] = JSON.parse(ticketsData);
+    //             counts.total = tickets.length;
+
+    //             // Count tickets by status
+    //             tickets.forEach((ticket) => {
+    //                 switch (ticket.status) {
+    //                     case "open":
+    //                         counts.open++;
+    //                         break;
+    //                     case "in_progress":
+    //                         counts.inProgress++;
+    //                         break;
+    //                     case "closed":
+    //                         counts.closed++;
+    //                         break;
+    //                 }
+    //             });
+    //         }
+    //     } catch (error) {
+    //         console.error("Error fetching ticket stats:", error);
+    //     }
+
+    //     // Return stats array with actual counts
+    //     return [
+    //         {
+    //             title: "Total Tickets",
+    //             value: counts.total,
+    //             icon: Ticket,
+    //             iconColor: "text-blue-600",
+    //             description: "All tickets in system",
+    //         },
+    //         {
+    //             title: "Open Tickets",
+    //             value: counts.open,
+    //             icon: CheckCircle,
+    //             iconColor: "text-green-600",
+    //             description: "Awaiting action",
+    //         },
+    //         {
+    //             title: "In Progress",
+    //             value: counts.inProgress,
+    //             icon: Clock,
+    //             iconColor: "text-amber-600",
+    //             description: "Currently being worked on",
+    //         },
+    //         {
+    //             title: "Resolved",
+    //             value: counts.closed,
+    //             icon: XCircle,
+    //             iconColor: "text-gray-600",
+    //             description: "Successfully completed",
+    //         },
+    //     ];
+    // };
+
+    // useEffect(() => {
+    //     const loadTickets = () => {
+    //         const ticketsData = localStorage.getItem("ticketapp_tickets");
+    //         if (ticketsData) {
+    //             try {
+    //                 const parsedTickets = JSON.parse(ticketsData);
+    //                 setTickets(parsedTickets);
+    //                 // Update stats after loading tickets
+    //                 setStats(getTicketStats());
+    //             } catch (error) {
+    //                 console.error(
+    //                     "Error parsing tickets from localStorage:",
+    //                     error
+    //                 );
+    //                 setTickets([]);
+    //                 setStats(getTicketStats());
+    //             }
+    //         } else {
+    //             setStats(getTicketStats());
+    //         }
+    //     };
+
+    //     loadTickets();
+    // }, []);
+
+    const stats = useMemo(() => {
+        const counts = {
+            total: tickets.length,
+            open: tickets.filter((t) => t.status === "open").length,
+            inProgress: tickets.filter((t) => t.status === "in_progress")
+                .length,
+            closed: tickets.filter((t) => t.status === "closed").length,
         };
 
-        try {
-            const ticketsData = localStorage.getItem("ticketapp_tickets");
-
-            if (ticketsData) {
-                const tickets: Ticket[] = JSON.parse(ticketsData);
-                counts.total = tickets.length;
-
-                // Count tickets by status
-                tickets.forEach((ticket) => {
-                    switch (ticket.status) {
-                        case "open":
-                            counts.open++;
-                            break;
-                        case "in_progress":
-                            counts.inProgress++;
-                            break;
-                        case "closed":
-                            counts.closed++;
-                            break;
-                    }
-                });
-            }
-        } catch (error) {
-            console.error("Error fetching ticket stats:", error);
-        }
-
-        // Return stats array with actual counts
         return [
             {
                 title: "Total Tickets",
@@ -122,55 +175,7 @@ const Dashboard = () => {
                 description: "Successfully completed",
             },
         ];
-    };
-
-    useEffect(() => {
-        const loadTickets = () => {
-            const ticketsData = localStorage.getItem("ticketapp_tickets");
-            if (ticketsData) {
-                try {
-                    const parsedTickets = JSON.parse(ticketsData);
-                    setTickets(parsedTickets);
-                    // Update stats after loading tickets
-                    setStats(getTicketStats());
-                } catch (error) {
-                    console.error(
-                        "Error parsing tickets from localStorage:",
-                        error
-                    );
-                    setTickets([]);
-                    setStats(getTicketStats());
-                }
-            } else {
-                setStats(getTicketStats());
-            }
-        };
-
-        loadTickets();
-    }, []);
-
-    const handleDelete = () => {
-        // Delete logic
-        const ticketsData = localStorage.getItem("ticketapp_tickets");
-        if (ticketsData) {
-            const tickets = JSON.parse(ticketsData);
-            const updatedTickets = tickets.filter(
-                (t: Ticket) => t.id !== ticketToDelete?.id
-            );
-            localStorage.setItem(
-                "ticketapp_tickets",
-                JSON.stringify(updatedTickets)
-            );
-
-            // Update local state
-            setTickets(updatedTickets);
-            // Update stats after deletion
-            setStats(getTicketStats());
-
-            toast.success("Ticket deleted successfully");
-            setShowDeleteDialog(false);
-        }
-    };
+    }, [tickets]);
 
     const QuickActions = [
         {
@@ -210,9 +215,12 @@ const Dashboard = () => {
     };
 
     const confirmDelete = () => {
-        handleDelete();
-        setShowDeleteDialog(false);
-        setTicketToDelete(null);
+        if (ticketToDelete) {
+            deleteTicket(ticketToDelete.id); // Use context function
+            toast.success("Ticket deleted successfully");
+            setShowDeleteDialog(false);
+            setTicketToDelete(null);
+        }
     };
 
     const getStatusLabel = (status: string) => {

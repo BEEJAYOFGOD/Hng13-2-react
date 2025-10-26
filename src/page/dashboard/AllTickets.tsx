@@ -1,38 +1,40 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { Ticket } from "./Dashboard";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useTickets } from "@/context/TicketContext";
 
 const AllTickets = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const [tickets, setTickets] = useState<Ticket[]>([]);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [ticketToDelete, setTicketToDelete] = useState<Ticket | null>(null);
+
+    const { tickets, deleteTicket } = useTickets();
 
     // Check if we're on the active tickets route
     const isActiveTicketsRoute = location.pathname === "/tickets/active";
 
-    // Load tickets from localStorage
-    useEffect(() => {
-        const loadTickets = () => {
-            const ticketsData = localStorage.getItem("ticketapp_tickets");
-            if (ticketsData) {
-                try {
-                    const parsedTickets = JSON.parse(ticketsData);
-                    setTickets(parsedTickets);
-                } catch (error) {
-                    console.error("Error parsing tickets:", error);
-                    setTickets([]);
-                }
-            } else {
-                setTickets([]);
-            }
-        };
+    // // Load tickets from localStorage
+    // useEffect(() => {
+    //     const loadTickets = () => {
+    //         const ticketsData = localStorage.getItem("ticketapp_tickets");
+    //         if (ticketsData) {
+    //             try {
+    //                 const parsedTickets = JSON.parse(ticketsData);
+    //                 setTickets(parsedTickets);
+    //             } catch (error) {
+    //                 console.error("Error parsing tickets:", error);
+    //                 setTickets([]);
+    //             }
+    //         } else {
+    //             setTickets([]);
+    //         }
+    //     };
 
-        loadTickets();
-    }, []);
+    //     loadTickets();
+    // }, []);
 
     // Filter tickets based on route
     const displayedTickets = isActiveTicketsRoute
@@ -47,23 +49,12 @@ const AllTickets = () => {
         setShowDeleteDialog(true);
     };
 
-    const handleDelete = () => {
-        const ticketsData = localStorage.getItem("ticketapp_tickets");
-        if (ticketsData) {
-            const tickets = JSON.parse(ticketsData);
-            const updatedTickets = tickets.filter(
-                (t: Ticket) => t.id !== ticketToDelete?.id
-            );
-            localStorage.setItem(
-                "ticketapp_tickets",
-                JSON.stringify(updatedTickets)
-            );
-
-            // Update local state
-            setTickets(updatedTickets);
-
+    const confirmDelete = () => {
+        if (ticketToDelete) {
+            deleteTicket(ticketToDelete.id); // Use context function
             toast.success("Ticket deleted successfully");
             setShowDeleteDialog(false);
+            setTicketToDelete(null);
         }
     };
 
@@ -99,12 +90,6 @@ const AllTickets = () => {
             default:
                 return status;
         }
-    };
-
-    const confirmDelete = () => {
-        handleDelete();
-        setShowDeleteDialog(false);
-        setTicketToDelete(null);
     };
 
     return (
