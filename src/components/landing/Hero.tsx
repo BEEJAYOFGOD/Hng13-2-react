@@ -1,10 +1,11 @@
 import { Button } from "../ui/button";
 import { NavLink as Link } from "react-router-dom";
 import wave from "../../assets/wave.svg";
+import wave_mobile from "@/assets/wave-mobile.svg";
 
 export default function Hero() {
     return (
-        <section className="py-20 md:py-32 min-h-screen border-red-400  relative">
+        <section className="pt-64 md:pt-32 min-h-screen border-red-400  relative">
             {/* Background gradient */}
 
             <div className="bg-primary h-6 w-6 animate-bounce absolute right-12 top-24 rounded-full " />
@@ -31,13 +32,13 @@ export default function Hero() {
                 <div className="flex flex-col md:flex-row gap-4 pt-4 justify-center">
                     <Button
                         size="lg"
-                        className="md:w-auto w-fit mx-auto px-24 py-4 md:m-0"
+                        className="h-full text-center hover:bg-primary/60 text-white bg-primary px-24 py-4 rounded-m"
                         asChild
                     >
                         <Link to="auth/signup">Get Started Free</Link>
                     </Button>
                     <Button
-                        className="md:w-auto w-fit mx-auto px-24 md:m-0"
+                        className="h-full text-black text-center hover:bg-black/5 border-2  px-24 py-4 rounded-md"
                         size={"lg"}
                         variant="outline"
                         asChild
@@ -51,7 +52,16 @@ export default function Hero() {
                 </p>
             </div>
             <div className="absolute bottom-0 w-full ">
-                <img className="w-[200%]" src={wave} alt="Wave decoration" />
+                <img
+                    className="w-[200%] hidden md:block"
+                    alt="Wave decoration"
+                    src={wave}
+                />
+                <img
+                    className="w-[200] block md:hidden"
+                    src={wave_mobile}
+                    alt="Wave decoration"
+                />
             </div>
         </section>
     );

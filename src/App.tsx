@@ -17,7 +17,6 @@ import { TicketsProvider } from "./context/TicketContext";
 function App() {
     return (
         <TicketsProvider>
-            {" "}
             <AuthProvider>
                 <Toaster
                     position="top-right"

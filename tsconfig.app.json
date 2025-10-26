@@ -27,5 +27,5 @@
         }
     },
 
-    "include": ["src", "src/components/ui/ui/button, "@/components/ui".tsx"]
+    "include": ["src"]
 }
