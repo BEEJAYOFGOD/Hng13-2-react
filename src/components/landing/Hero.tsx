@@ -58,7 +58,7 @@ export default function Hero() {
                     src={wave}
                 />
                 <img
-                    className="w-[200] block md:hidden"
+                    className="w-[200%] block md:hidden"
                     src={wave_mobile}
                     alt="Wave decoration"
                 />
