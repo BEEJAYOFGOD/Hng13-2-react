@@ -245,7 +245,7 @@ const Dashboard = () => {
     };
 
     return (
-        <section className="p-12">
+        <section className="p-12 ">
             <h2 className="text-2xl font-bold">Welcome {user?.email}</h2>
             <div className="mt-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -256,9 +256,8 @@ const Dashboard = () => {
             </div>
 
             {/*Quick Action */}
-
             <Card className="mt-8">
-                <CardTitle className="p-4">Quick Actions</CardTitle>
+                <CardTitle className="px-4 text-xl">Quick Actions</CardTitle>
                 <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {QuickActions.map((action, index) => (
                         <Link key={index} to={action.href}>
@@ -284,7 +283,9 @@ const Dashboard = () => {
                 <Card className="my-8">
                     <CardHeader>
                         <div className="flex justify-between items-center">
-                            <CardTitle>Recent Tickets</CardTitle>
+                            <CardTitle className="text-xl">
+                                Recent Tickets
+                            </CardTitle>
                             <Button
                                 variant="outline"
                                 onClick={() => navigate("/tickets")}

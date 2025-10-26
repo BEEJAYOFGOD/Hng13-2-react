@@ -25,7 +25,7 @@ const DashboardLayout = () => {
                     </div>
                 </div>
             </header>
-            <div className="mt-12">{<Outlet />}</div>
+            <div className="mt-12 bg-gray-200/60">{<Outlet />}</div>
         </main>
     );
 };
