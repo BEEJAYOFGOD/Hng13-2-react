@@ -245,8 +245,10 @@ const Dashboard = () => {
     };
 
     return (
-        <section className="p-12  max-w-[1440px]">
-            <h2 className="text-2xl font-bold">Welcome {user?.email}</h2>
+        <section className="md:p-12 md:py-12 px-4 py-8  max-w-[1440px]">
+            <h2 className="md:text-2xl text-lg font-bold">
+                Welcome {user?.email}
+            </h2>
             <div className="mt-8">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {stats.map((stat) => (
