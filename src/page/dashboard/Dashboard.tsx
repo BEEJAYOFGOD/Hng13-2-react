@@ -16,7 +16,6 @@ import { Clock3Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState, useMemo } from "react";
-import { toast } from "sonner";
 import { useTickets } from "@/context/TicketContext";
 
 export interface Ticket {
