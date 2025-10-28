@@ -11,8 +11,8 @@ const DashboardLayout = () => {
     return (
         <main className="">
             {/* Header with full-width background */}
-            <header className="max-w-full w-full fixed top-0 border-b bg-white z-50">
-                <div className="  flex justify-between items-center px-4 sm:px-6 lg:px-24 py-4">
+            <header className=" w-full fixed top-0 border-b bg-white z-50">
+                <div className=" mx-auto flex max-w-[1440px] justify-between items-center md:px-3  lg:px-24 py-4">
                     <h1 className="text-3xl text-primary hover:text-hover hover:underline font-bold">
                         <Link to="/dashboard">Dashboard</Link>
                     </h1>
