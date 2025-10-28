@@ -104,7 +104,7 @@ const AllTickets = () => {
                     to="/tickets"
                     className={`px-4 py-2 rounded-lg transition-colors ${
                         !isActiveTicketsRoute
-                            ? "bg-blue-600 text-white"
+                            ? "bg-primary hover:bg-hover text-white"
                             : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                     }`}
                 >
@@ -114,7 +114,7 @@ const AllTickets = () => {
                     to="/tickets/active"
                     className={`px-4 py-2 rounded-lg transition-colors ${
                         isActiveTicketsRoute
-                            ? "bg-blue-600 text-white"
+                            ? "bg-primary hover:bg-hover text-white"
                             : "bg-gray-200 text-gray-700 hover:bg-gray-300"
                     }`}
                 >

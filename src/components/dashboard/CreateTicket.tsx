@@ -268,7 +268,7 @@ const CreateEditTicket = () => {
                                 value={formData.title}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="Enter ticket title"
                                 disabled={isLoading}
                                 aria-invalid={!!errors.title}
@@ -299,7 +299,7 @@ const CreateEditTicket = () => {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 rows={4}
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
                                 placeholder="Enter ticket description (optional)"
                                 disabled={isLoading}
                                 aria-invalid={!!errors.description}
@@ -329,7 +329,7 @@ const CreateEditTicket = () => {
                                 value={formData.status}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
                                 disabled={isLoading}
                                 aria-invalid={!!errors.status}
                             >
@@ -362,7 +362,7 @@ const CreateEditTicket = () => {
                                 name="priority"
                                 value={formData.priority}
                                 onChange={handleChange}
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
                                 disabled={isLoading}
                             >
                                 <option value="">Select priority</option>
@@ -384,7 +384,7 @@ const CreateEditTicket = () => {
                             </button>
                             <button
                                 type="submit"
-                                className="px-6 py-2 bg-blue-600 cursor-pointer text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="px-6 py-2 bg-primary hover:bg-hover cursor-pointer text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={isLoading}
                             >
                                 {isLoading

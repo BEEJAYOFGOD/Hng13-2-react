@@ -83,7 +83,7 @@ export default function Header() {
                                 <Link
                                     to="/auth/signup"
                                     className={
-                                        "bg-primary rounded-md px-4 py-2"
+                                        "bg-primary hover:bg-hover text-white rounded-md px-4 py-2"
                                     }
                                 >
                                     Sign up
