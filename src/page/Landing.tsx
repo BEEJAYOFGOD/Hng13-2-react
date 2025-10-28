@@ -11,10 +11,13 @@ export default function Home() {
 
     return (
         <main className="min-h-screen bg-background">
-            <div className="min-h-screen border ">
+            <div className="min-h-screen">
                 <Header />
-                <Hero />
+                <div className="max-w-[1440px] mx-auto">
+                    <Hero />
+                </div>
             </div>
+
             <Features />
             <Stats />
             <HowItWorks />

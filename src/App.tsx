@@ -16,8 +16,8 @@ import { TicketsProvider } from "./context/TicketContext";
 
 function App() {
     return (
-        <TicketsProvider>
-            <AuthProvider>
+        <AuthProvider>
+            <TicketsProvider>
                 <Toaster
                     position="top-right"
                     closeButton
@@ -81,8 +81,8 @@ function App() {
 
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
-            </AuthProvider>
-        </TicketsProvider>
+            </TicketsProvider>
+        </AuthProvider>
     );
 }
 

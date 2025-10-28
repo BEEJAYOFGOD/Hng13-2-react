@@ -13,9 +13,17 @@ interface User {
     email: string;
 }
 
+interface StoredUser extends User {
+    id: string;
+    password: string;
+    createdAt: string;
+    tickets: string[];
+}
+
 interface Session {
     token: string;
     user: User;
+    loggedInAt: string;
 }
 
 interface AuthContextType {
@@ -66,6 +74,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     };
 
+    // Helper function to get all users
+    const getAllUsers = (): StoredUser[] => {
+        try {
+            const usersData = localStorage.getItem("ticketapp_users");
+            return usersData ? JSON.parse(usersData) : [];
+        } catch (error) {
+            console.error("Failed to parse users:", error);
+            return [];
+        }
+    };
+
+    // Helper function to save all users
+    const saveAllUsers = (users: StoredUser[]): void => {
+        localStorage.setItem("ticketapp_users", JSON.stringify(users));
+    };
+
     const signup = async (
         name: string,
         email: string,
@@ -73,26 +97,37 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     ): Promise<boolean> => {
         try {
             // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 500));
+
+            // Get all existing users
+            const allUsers = getAllUsers();
 
             // Check if user already exists
-            const existingUser = localStorage.getItem("ticketapp_user");
+            const existingUser = allUsers.find((u) => u.email === email);
             if (existingUser) {
-                const userData = JSON.parse(existingUser);
-                if (userData.email === email) {
-                    toast.error("User with this email already exists");
-                    return false;
-                }
+                toast.error("User with this email already exists");
+                return false;
             }
 
-            // Store user credentials (in real app, this would be on backend)
-            const userData = { name, email, password };
-            localStorage.setItem("ticketapp_user", JSON.stringify(userData));
+            // Create new user
+            const newUser: StoredUser = {
+                id: "176166048685" + Date.now(), // Generate unique ID
+                name,
+                email,
+                password,
+                createdAt: new Date().toISOString(),
+                tickets: [],
+            };
+
+            // Add to users array and save
+            allUsers.push(newUser);
+            saveAllUsers(allUsers);
 
             // Create session
             const session: Session = {
                 token: "mock-token-" + Date.now(),
                 user: { name, email },
+                loggedInAt: new Date().toISOString(),
             };
 
             localStorage.setItem("ticketapp_session", JSON.stringify(session));
@@ -101,7 +136,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             toast.success("Account created successfully!");
             return true;
         } catch (error) {
-            console.log(error);
+            console.error("Signup error:", error);
             toast.error("Failed to create account");
             return false;
         }
@@ -110,35 +145,38 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const login = async (email: string, password: string): Promise<boolean> => {
         try {
             // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            await new Promise((resolve) => setTimeout(resolve, 500));
 
-            // Check stored user credentials
-            const storedUser = localStorage.getItem("ticketapp_user");
+            // Get all users
+            const allUsers = getAllUsers();
 
-            if (!storedUser) {
+            // Find user by email
+            const user = allUsers.find((u) => u.email === email);
+
+            if (!user) {
                 toast.error("User not found - please sign up first");
                 return false;
             }
 
-            const userData = JSON.parse(storedUser);
-
-            if (userData.email !== email || userData.password !== password) {
-                toast.error("Invalid credentials - please try again");
+            if (user.password !== password) {
+                toast.error("Invalid password - please try again");
                 return false;
             }
 
             // Create session
             const session: Session = {
                 token: "mock-token-" + Date.now(),
-                user: { name: userData.name, email: userData.email },
+                user: { name: user.name, email: user.email },
+                loggedInAt: new Date().toISOString(),
             };
+
             localStorage.setItem("ticketapp_session", JSON.stringify(session));
 
             setUser(session.user);
-            toast.success("Login successful!");
+            toast.success(`Welcome back, ${user.name}!`);
             return true;
         } catch (error) {
-            console.log(error);
+            console.error("Login error:", error);
             toast.error("Login failed - please try again");
             return false;
         }

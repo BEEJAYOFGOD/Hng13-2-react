@@ -1,11 +1,14 @@
+// RootLayout.jsx
 import { Outlet } from "react-router-dom";
 import Footer from "../landing/Footer";
 
 const RootLayout = () => {
     return (
         <>
-            {<Outlet />}
-            <Footer />
+            <div className="w-full  mx-auto">
+                <Outlet />
+                <Footer />
+            </div>
         </>
     );
 };

@@ -5,12 +5,13 @@ import wave_mobile from "@/assets/wave-mobile.svg";
 
 export default function Hero() {
     return (
-        <section className="pt-64 md:pt-32 min-h-screen border-red-400  relative">
+        <section className="pt-64 md:pt-32 min-h-screen border   relative">
             {/* Background gradient */}
 
             <div className="bg-primary h-6 w-6 animate-bounce absolute right-12 top-24 rounded-full " />
             <div className="bg-primary h-6 w-6 animate-bounce absolute left-12 bottom-48 rounded-full" />
-            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 z-4">
+
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-3 mt-3 md:mt-0 z-4 md:flex md:flex-col justify-center block">
                 <div className="flex justify-center gap-3 items-center">
                     <span className="h-4 w-4 bg-primary rounded-full  animate-ping" />
                     <span className="px-3 py-1 bg-primary/10 text-primary   rounded-full text-sm font-medium">
@@ -29,7 +30,7 @@ export default function Hero() {
                     prioritize, and resolve issues in real-time.
                 </p>
 
-                <div className="flex flex-col md:flex-row gap-4 pt-4 justify-center">
+                <div className="flex flex-col md:flex-row gap-4  justify-center">
                     <Button
                         size="lg"
                         className="h-full text-center hover:bg-primary/60 text-white bg-primary px-24 py-4 rounded-m"
@@ -51,6 +52,7 @@ export default function Hero() {
                     No credit card required. Start managing tickets in minutes.
                 </p>
             </div>
+
             <div className="absolute bottom-0 w-full ">
                 <img
                     className="w-[200%] hidden md:block"

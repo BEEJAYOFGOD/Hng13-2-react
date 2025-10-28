@@ -1,13 +1,26 @@
 import { Button } from "../ui/button";
 import { NavLink as Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, logout } = useAuth();
+    const navigate = useNavigate();
+
+    const scrollToSection = (sectionId: string) => {
+        // If already on the page, just scroll
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+        } else {
+            // Navigate to home page, then scroll after navigation
+            navigate("/");
+        }
+    };
 
     console.log(isAuthenticated);
     return (
-        <header className="fixed w-full top-0 z-50 bg-background border-b border-border">
+        <header className="fixed   w-full top-0 z-50 bg-background border-b">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
@@ -26,27 +39,24 @@ export default function Header() {
                     <nav className="hidden md:flex items-center gap-8">
                         <Link
                             to="#features"
+                            onClick={() => scrollToSection("features")}
                             className="text-foreground hover:text-primary transition-colors"
                         >
                             Features
                         </Link>
                         <Link
                             to="#how-it-works"
+                            onClick={() => scrollToSection("how-it-works")}
                             className="text-foreground hover:text-primary transition-colors"
                         >
                             How It Works
                         </Link>
                         <Link
                             to="#faq"
+                            onClick={() => scrollToSection("faq")}
                             className="text-foreground hover:text-primary transition-colors"
                         >
                             FAQ
-                        </Link>
-                        <Link
-                            to="#pricing"
-                            className="text-foreground hover:text-primary transition-colors"
-                        >
-                            Pricing
                         </Link>
                     </nav>
 
@@ -59,9 +69,27 @@ export default function Header() {
                                 <Link to="/dashboard">Dashboard</Link>
                             )}
                         </Button>
-                        <Button asChild>
-                            <Link to="/auth/signup">Sign up</Link>
-                        </Button>
+                        <>
+                            {isAuthenticated ? (
+                                <Button
+                                    onClick={logout}
+                                    className={
+                                        "bg-red-500 rounded-md px-4 py-2"
+                                    }
+                                >
+                                    Log out
+                                </Button>
+                            ) : (
+                                <Link
+                                    to="/auth/signup"
+                                    className={
+                                        "bg-primary rounded-md px-4 py-2"
+                                    }
+                                >
+                                    Sign up
+                                </Link>
+                            )}
+                        </>
                     </div>
                 </div>
             </div>

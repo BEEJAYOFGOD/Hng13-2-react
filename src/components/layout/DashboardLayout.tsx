@@ -1,31 +1,46 @@
+// DashboardLayout.jsx
 import { useAuth } from "@/context/AuthContext";
 import { Outlet } from "react-router-dom";
 import { Link } from "react-router-dom";
+import Footer from "../landing/Footer";
 
 const DashboardLayout = () => {
     const { user, logout } = useAuth();
     console.log(user);
 
     return (
-        <main>
-            <header className="w-full flex fixed top-0  justify-between items-center px-12 p-4 border-b bg-white">
-                <h1 className="text-3xl font-bold">
-                    <Link to="/dashboard"> Dashboard</Link>
-                </h1>
+        <main className="">
+            {/* Header with full-width background */}
+            <header className="max-w-full w-full fixed top-0 border-b bg-white z-50">
+                <div className="  flex justify-between items-center px-4 sm:px-6 lg:px-24 py-4">
+                    <h1 className="text-3xl text-primary hover:text-hover hover:underline font-bold">
+                        <Link to="/dashboard">Dashboard</Link>
+                    </h1>
 
-                <div className="flex gap-4">
-                    <button
-                        className="cursor-pointer bg-destructive/80 hover:bg-destructive/50  text-white px-4 rounded-md"
-                        onClick={logout}
-                    >
-                        Log Out
-                    </button>
-                    <div className="h-8 w-8 bg-primary flex justify-center items-center rounded-full">
-                        <p className="text-white">{user?.name.split("")[0]}</p>
+                    <div className="flex gap-4 items-center">
+                        <button
+                            className="cursor-pointer bg-destructive/80 hover:bg-destructive/50 text-white px-4 py-2 rounded-md transition-colors"
+                            onClick={logout}
+                        >
+                            Log Out
+                        </button>
+
+                        <div className="h-8 w-8 bg-primary flex justify-center items-center rounded-full">
+                            <p className="text-white font-semibold">
+                                {user?.name.charAt(0).toUpperCase()}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </header>
-            <div className="mt-12 bg-gray-200/60">{<Outlet />}</div>
+
+            {/* Content area with background */}
+            <div className="pt-20 bg-gray-200/60 min-h-screen">
+                <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-12">
+                    <Outlet />
+                </div>
+            </div>
+            <Footer />
         </main>
     );
 };

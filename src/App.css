@@ -59,9 +59,11 @@
     --color-primary: #3b82f6;
     --color-primary-foreground: var(--primary-foreground);
 
+
     /* Secondary Colors */
     --color-secondary: var(--secondary);
     --color-secondary-foreground: var(--secondary-foreground);
+    --color-hover: #0891b2;
 
     /* Muted Colors */
     --color-muted: var(--muted);
