@@ -53,7 +53,7 @@ export default function Hero() {
                 </p>
             </div>
 
-            <div className="absolute bottom-0 w-full ">
+            <div className="absolute bottom-0 w-full z-99">
                 <img
                     className="w-[200%] hidden md:block"
                     alt="Wave decoration"
