@@ -31,7 +31,7 @@ export default function Footer() {
                         <ul className="space-y-2">
                             <li>
                                 <Link
-                                    to="#features"
+                                    to="/#features"
                                     className="text-muted-foreground hover:text-primary text-sm"
                                 >
                                     Features
@@ -39,7 +39,7 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    to="#pricing"
+                                    to="/#pricing"
                                     className="text-muted-foreground hover:text-primary text-sm"
                                 >
                                     Pricing
@@ -80,10 +80,10 @@ export default function Footer() {
                             </li>
                             <li>
                                 <Link
-                                    to="#"
+                                    to="/"
                                     className="text-muted-foreground hover:text-primary text-sm"
                                 >
-                                    Blog
+                                    Home
                                 </Link>
                             </li>
                             <li>

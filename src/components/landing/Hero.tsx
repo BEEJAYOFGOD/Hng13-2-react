@@ -5,7 +5,7 @@ import wave_mobile from "@/assets/wave-mobile.svg";
 
 export default function Hero() {
     return (
-        <section className="pt-64 md:pt-32 min-h-screen border   relative">
+        <section className=" md:pt-38 min-h-screen flex flex-col md:block  border-4 boreder-red-500 justify-center   relative">
             {/* Background gradient */}
 
             <div className="bg-primary h-6 w-6 animate-bounce absolute right-12 top-24 rounded-full " />
