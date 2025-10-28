@@ -24,7 +24,7 @@ export default function Hero() {
                     <span className="text-primary">Ease</span>
                 </h1>
 
-                <p className="text-lg text-muted-foreground max-w-lg text-center mx-auto">
+                <p className="md:text-lg text-sm text-muted-foreground max-w-lg text-center mx-auto">
                     Ticko is the modern ticket management system designed for
                     teams that want to work smarter, not harder. Track,
                     prioritize, and resolve issues in real-time.
@@ -33,13 +33,13 @@ export default function Hero() {
                 <div className="flex flex-col md:flex-row gap-4  justify-center">
                     <Button
                         size="lg"
-                        className="h-full text-center hover:bg-primary/60 text-white bg-primary px-24 py-4 rounded-m"
+                        className="h-full text-center hover:bg-primary/60 text-white bg-primary mdpx-24 md:py-4 px-12 py-3 rounded-m"
                         asChild
                     >
                         <Link to="auth/signup">Get Started Free</Link>
                     </Button>
                     <Button
-                        className="h-full text-black text-center hover:bg-black/5 border-2  px-24 py-4 rounded-md"
+                        className="h-full text-black text-center hover:bg-black/5 border-2  md:py-4 px-12 py-3 rounded-md"
                         size={"lg"}
                         variant="outline"
                         asChild
@@ -53,7 +53,7 @@ export default function Hero() {
                 </p>
             </div>
 
-            <div className="absolute bottom-0 w-full z-99">
+            <div className="absolute bottom-0 w-full ">
                 <img
                     className="w-[200%] hidden md:block"
                     alt="Wave decoration"
