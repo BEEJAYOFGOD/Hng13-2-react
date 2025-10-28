@@ -217,7 +217,6 @@ const Dashboard = () => {
     const confirmDelete = () => {
         if (ticketToDelete) {
             deleteTicket(ticketToDelete.id); // Use context function
-            toast.success("Ticket deleted successfully");
             setShowDeleteDialog(false);
             setTicketToDelete(null);
         }

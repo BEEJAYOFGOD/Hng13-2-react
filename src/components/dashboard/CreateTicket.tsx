@@ -219,7 +219,7 @@ const CreateEditTicket = () => {
                     createdAt: new Date().toISOString(),
                 };
                 addTicket(newTicket);
-                toast.success("Ticket created successfully!");
+
             }
 
             // Reset form if creating new
