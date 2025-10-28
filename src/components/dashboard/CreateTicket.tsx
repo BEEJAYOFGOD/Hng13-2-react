@@ -245,161 +245,150 @@ const CreateEditTicket = () => {
     };
 
     return (
-        <main className="min-h-screen bg-gray-50 py-8 pt-16">
-            <div className="max-w-2xl mx-auto px-4">
-                <div className="bg-white p-8 shadow-md rounded-lg">
-                    <h1 className="text-2xl font-bold mb-6">
-                        {isEditMode ? "Edit Ticket" : "Create New Ticket"}
-                    </h1>
+        <div className="max-w-2xl mx-auto px-4 py-8">
+            <div className="bg-white p-8 shadow-md rounded-lg">
+                <h1 className="text-2xl font-bold mb-6">
+                    {isEditMode ? "Edit Ticket" : "Create New Ticket"}
+                </h1>
 
-                    <form className="space-y-6" onSubmit={handleSubmit}>
-                        {/* Title */}
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="title"
-                                className="block font-medium"
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                    {/* Title */}
+                    <div className="space-y-2">
+                        <label htmlFor="title" className="block font-medium">
+                            Title <span className="text-red-600">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            placeholder="Enter ticket title"
+                            disabled={isLoading}
+                            aria-invalid={!!errors.title}
+                        />
+                        {errors.title && (
+                            <p
+                                className="text-sm text-red-600 flex items-center gap-1"
+                                role="alert"
                             >
-                                Title <span className="text-red-600">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="title"
-                                name="title"
-                                value={formData.title}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                                placeholder="Enter ticket title"
-                                disabled={isLoading}
-                                aria-invalid={!!errors.title}
-                            />
-                            {errors.title && (
-                                <p
-                                    className="text-sm text-red-600 flex items-center gap-1"
-                                    role="alert"
-                                >
-                                    <AlertCircle className="h-4 w-4" />
-                                    {errors.title}
-                                </p>
-                            )}
-                        </div>
+                                <AlertCircle className="h-4 w-4" />
+                                {errors.title}
+                            </p>
+                        )}
+                    </div>
 
-                        {/* Description */}
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="description"
-                                className="block font-medium"
+                    {/* Description */}
+                    <div className="space-y-2">
+                        <label
+                            htmlFor="description"
+                            className="block font-medium"
+                        >
+                            Description
+                        </label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            rows={4}
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            placeholder="Enter ticket description (optional)"
+                            disabled={isLoading}
+                            aria-invalid={!!errors.description}
+                        />
+                        {errors.description && (
+                            <p
+                                className="text-sm text-red-600 flex items-center gap-1"
+                                role="alert"
                             >
-                                Description
-                            </label>
-                            <textarea
-                                id="description"
-                                name="description"
-                                value={formData.description}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                rows={4}
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                                placeholder="Enter ticket description (optional)"
-                                disabled={isLoading}
-                                aria-invalid={!!errors.description}
-                            />
-                            {errors.description && (
-                                <p
-                                    className="text-sm text-red-600 flex items-center gap-1"
-                                    role="alert"
-                                >
-                                    <AlertCircle className="h-4 w-4" />
-                                    {errors.description}
-                                </p>
-                            )}
-                        </div>
+                                <AlertCircle className="h-4 w-4" />
+                                {errors.description}
+                            </p>
+                        )}
+                    </div>
 
-                        {/* Status */}
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="status"
-                                className="block font-medium"
+                    {/* Status */}
+                    <div className="space-y-2">
+                        <label htmlFor="status" className="block font-medium">
+                            Status <span className="text-red-600">*</span>
+                        </label>
+                        <select
+                            id="status"
+                            name="status"
+                            value={formData.status}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            disabled={isLoading}
+                            aria-invalid={!!errors.status}
+                        >
+                            <option value="">Select status</option>
+                            <option value="open">Open</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="closed">Closed</option>
+                        </select>
+                        {errors.status && (
+                            <p
+                                className="text-sm text-red-600 flex items-center gap-1"
+                                role="alert"
                             >
-                                Status <span className="text-red-600">*</span>
-                            </label>
-                            <select
-                                id="status"
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                                disabled={isLoading}
-                                aria-invalid={!!errors.status}
-                            >
-                                <option value="">Select status</option>
-                                <option value="open">Open</option>
-                                <option value="in_progress">In Progress</option>
-                                <option value="closed">Closed</option>
-                            </select>
-                            {errors.status && (
-                                <p
-                                    className="text-sm text-red-600 flex items-center gap-1"
-                                    role="alert"
-                                >
-                                    <AlertCircle className="h-4 w-4" />
-                                    {errors.status}
-                                </p>
-                            )}
-                        </div>
+                                <AlertCircle className="h-4 w-4" />
+                                {errors.status}
+                            </p>
+                        )}
+                    </div>
 
-                        {/* Priority (Optional) */}
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="priority"
-                                className="block font-medium"
-                            >
-                                Priority (Optional)
-                            </label>
-                            <select
-                                id="priority"
-                                name="priority"
-                                value={formData.priority}
-                                onChange={handleChange}
-                                className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
-                                disabled={isLoading}
-                            >
-                                <option value="">Select priority</option>
-                                <option value="low">Low</option>
-                                <option value="medium">Medium</option>
-                                <option value="high">High</option>
-                            </select>
-                        </div>
+                    {/* Priority (Optional) */}
+                    <div className="space-y-2">
+                        <label htmlFor="priority" className="block font-medium">
+                            Priority (Optional)
+                        </label>
+                        <select
+                            id="priority"
+                            name="priority"
+                            value={formData.priority}
+                            onChange={handleChange}
+                            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                            disabled={isLoading}
+                        >
+                            <option value="">Select priority</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
 
-                        {/* Buttons */}
-                        <div className="flex gap-3 justify-end pt-4">
-                            <button
-                                type="button"
-                                onClick={() => navigate("/tickets")}
-                                className="px-4 py-2 border cursor-pointer border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-                                disabled={isLoading}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                className="px-6 py-2 bg-primary hover:bg-hover cursor-pointer text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                disabled={isLoading}
-                            >
-                                {isLoading
-                                    ? isEditMode
-                                        ? "Updating..."
-                                        : "Creating..."
-                                    : isEditMode
-                                    ? "Update Ticket"
-                                    : "Create Ticket"}
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    {/* Buttons */}
+                    <div className="flex gap-3 justify-end pt-4">
+                        <button
+                            type="button"
+                            onClick={() => navigate("/tickets")}
+                            className="px-4 py-2 border cursor-pointer border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                            disabled={isLoading}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-6 py-2 bg-primary hover:bg-hover cursor-pointer text-white rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            disabled={isLoading}
+                        >
+                            {isLoading
+                                ? isEditMode
+                                    ? "Updating..."
+                                    : "Creating..."
+                                : isEditMode
+                                ? "Update Ticket"
+                                : "Create Ticket"}
+                        </button>
+                    </div>
+                </form>
             </div>
-        </main>
+        </div>
     );
 };
 

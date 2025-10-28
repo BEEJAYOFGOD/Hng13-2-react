@@ -35,7 +35,7 @@ const DashboardLayout = () => {
             </header>
 
             {/* Content area with background */}
-            <div className="pt-20 bg-gray-200/60 min-h-screen">
+            <div className="pt-20 bg-gray-200/60 ">
                 <div className="max-w-[1440px]  mx-auto px-4 sm:px-6 lg:px-12">
                     <Outlet />
                 </div>
