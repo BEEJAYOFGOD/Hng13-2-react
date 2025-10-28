@@ -193,8 +193,8 @@ This project is part of the HNG Internship Stage 2 Frontend Task.
 ## 👤 Author
 
 **Your Name**
-- GitHub: [@yourusername]
-- Email: your.email@example.com
+- GitHub: [@beejayofgod]
+- Email: adexbolaji100@gmail.com
 
 ## 🙏 Acknowledgments
 
